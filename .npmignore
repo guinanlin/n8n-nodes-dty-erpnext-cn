@@ -1,2 +1,27 @@
 .DS_Store
 *.tsbuildinfo
+
+# 开发文件
+src/
+nodes/
+credentials/
+*.ts
+*.tsx
+
+# 配置文件
+tsconfig.json
+gulpfile.js
+.eslintrc*
+.prettierrc*
+
+# 开发依赖
+node_modules/
+pnpm-lock.yaml
+
+# 文档
+README_TEMPLATE.md
+CODE_OF_CONDUCT.md
+
+# 其他
+.git/
+.gitignore
