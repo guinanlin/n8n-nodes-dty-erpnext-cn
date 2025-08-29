@@ -18,7 +18,7 @@ import { processNames, toSQL } from './utils';
 export class ERPNextCN implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'erpNextcn',
-		name: 'erpNextCN',
+		name: 'erpNextCn',
 		icon: 'file:erpnext.svg',
 		group: ['output'],
 		version: 1,
