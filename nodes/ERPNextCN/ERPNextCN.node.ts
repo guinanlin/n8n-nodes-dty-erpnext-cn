@@ -17,7 +17,7 @@ import { processNames, toSQL } from './utils';
 
 export class ERPNextCN implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'ERPNextcn',
+		displayName: 'erpNextcn',
 		name: 'erpNextCN',
 		icon: 'file:erpnext.svg',
 		group: ['output'],
@@ -25,7 +25,7 @@ export class ERPNextCN implements INodeType {
 		subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
 		description: 'Consume ERPNext API (China Version)',
 		defaults: {
-			name: 'ERPNextcn',
+			name: 'erpNextcn',
 		},
 		usableAsTool: true,
 		inputs: [NodeConnectionType.Main],
