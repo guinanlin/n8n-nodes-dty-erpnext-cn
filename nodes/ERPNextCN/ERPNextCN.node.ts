@@ -1,24 +1,22 @@
 /* eslint-disable n8n-nodes-base/node-filename-against-convention */
 import type {
 	IExecuteFunctions,
-	IDataObject,
 	ILoadOptionsFunctions,
 	INodeExecutionData,
 	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
+import { NodeConnectionType } from 'n8n-workflow';
 
 import { 
-	documentQueryOperations, 
-	documentQueryFields,
-	documentManageOperations,
-	documentManageFields 
-} from './DocumentDescription';
+	getResourceOptions, 
+	getAllOperations, 
+	getAllFields, 
+	getResourceExecute 
+} from './resources';
 import { erpNextApiRequest, erpNextApiRequestAllItems } from './GenericFunctions';
-import type { DocumentProperties } from './utils';
-import { processNames, toSQL } from './utils';
+import { processNames } from './shared/helpers';
 
 export class ERPNextCN implements INodeType {
 	description: INodeTypeDescription = {
@@ -47,22 +45,11 @@ export class ERPNextCN implements INodeType {
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
-				options: [
-					{
-						name: '文档查询',
-						value: 'documentQuery',
-					},
-					{
-						name: '文档管理',
-						value: 'documentManage',
-					},
-				],
+				options: getResourceOptions(),
 				default: 'documentQuery',
 			},
-			...documentQueryOperations,
-			...documentQueryFields,
-			...documentManageOperations,
-			...documentManageFields,
+			...getAllOperations(),
+			...getAllFields(),
 		],
 	};
 
@@ -122,188 +109,17 @@ export class ERPNextCN implements INodeType {
 	};
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
-		const items = this.getInputData();
+		const resource = this.getNodeParameter('resource', 0) as string;
+		const operation = this.getNodeParameter('operation', 0) as string;
 
-		const returnData: INodeExecutionData[] = [];
-		let responseData;
-
-		const body: IDataObject = {};
-		const qs: IDataObject = {};
-
-		const resource = this.getNodeParameter('resource', 0);
-		const operation = this.getNodeParameter('operation', 0);
-
-		for (let i = 0; i < items.length; i++) {
-			// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/Resources/post_api_resource_Webhook
-			// https://frappeframework.com/docs/user/en/guides/integration/rest_api/manipulating_documents
-
-			if (resource === 'documentQuery') {
-				// *********************************************************************
-				//                             documentQuery
-				// *********************************************************************
-
-				if (operation === 'get') {
-					// ----------------------------------
-					//          documentQuery: get
-					// ----------------------------------
-
-					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/get_api_resource__DocType___DocumentName_
-
-					const docType = this.getNodeParameter('docType', i) as string;
-					const documentName = this.getNodeParameter('documentName', i) as string;
-
-					responseData = await erpNextApiRequest.call(
-						this,
-						'GET',
-						`/api/resource/${docType}/${documentName}`,
-					);
-					responseData = responseData.data;
-				}
-
-				if (operation === 'getAll') {
-					// ----------------------------------
-					//         documentQuery: getAll
-					// ----------------------------------
-
-					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/get_api_resource__DocType_
-
-					const docType = this.getNodeParameter('docType', i) as string;
-					const endpoint = `/api/resource/${docType}`;
-
-					const { fields, filters } = this.getNodeParameter('options', i) as {
-						fields: string[];
-						filters: {
-							customProperty: Array<{ field: string; operator: string; value: string }>;
-						};
-					};
-
-					// fields=["test", "example", "hi"]
-					if (fields) {
-						if (fields.includes('*')) {
-							qs.fields = JSON.stringify(['*']);
-						} else {
-							qs.fields = JSON.stringify(fields);
-						}
-					}
-					// filters=[["Person","first_name","=","Jane"]]
-					// TODO: filters not working
-					if (filters) {
-						qs.filters = JSON.stringify(
-							filters.customProperty.map((filter) => {
-								return [docType, filter.field, toSQL(filter.operator), filter.value];
-							}),
-						);
-					}
-
-					const returnAll = this.getNodeParameter('returnAll', i);
-
-					if (!returnAll) {
-						const limit = this.getNodeParameter('limit', i);
-						qs.limit_page_length = limit;
-						qs.limit_start = 0;
-						responseData = await erpNextApiRequest.call(this, 'GET', endpoint, {}, qs);
-						responseData = responseData.data;
-					} else {
-						responseData = await erpNextApiRequestAllItems.call(
-							this,
-							'data',
-							'GET',
-							endpoint,
-							{},
-							qs,
-						);
-					}
-				}
-			} else if (resource === 'documentManage') {
-				// *********************************************************************
-				//                             documentManage
-				// *********************************************************************
-
-				if (operation === 'create') {
-					// ----------------------------------
-					//         documentManage: create
-					// ----------------------------------
-
-					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/post_api_resource__DocType_
-
-					const properties = this.getNodeParameter('properties', i) as DocumentProperties;
-
-					if (!properties.customProperty.length) {
-						throw new NodeOperationError(
-							this.getNode(),
-							'Please enter at least one property for the document to create.',
-							{ itemIndex: i },
-						);
-					}
-
-					properties.customProperty.forEach((property) => {
-						body[property.field] = property.value;
-					});
-
-					const docType = this.getNodeParameter('docType', i) as string;
-
-					responseData = await erpNextApiRequest.call(
-						this,
-						'POST',
-						`/api/resource/${docType}`,
-						body,
-					);
-					responseData = responseData.data;
-				} else if (operation === 'delete') {
-					// ----------------------------------
-					//         documentManage: delete
-					// ----------------------------------
-
-					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/delete_api_resource__DocType___DocumentName_
-
-					const docType = this.getNodeParameter('docType', i) as string;
-					const documentName = this.getNodeParameter('documentName', i) as string;
-
-					responseData = await erpNextApiRequest.call(
-						this,
-						'DELETE',
-						`/api/resource/${docType}/${documentName}`,
-					);
-				} else if (operation === 'update') {
-					// ----------------------------------
-					//         documentManage: update
-					// ----------------------------------
-
-					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/put_api_resource__DocType___DocumentName_
-
-					const properties = this.getNodeParameter('properties', i) as DocumentProperties;
-
-					if (!properties.customProperty.length) {
-						throw new NodeOperationError(
-							this.getNode(),
-							'Please enter at least one property for the document to update.',
-							{ itemIndex: i },
-						);
-					}
-
-					properties.customProperty.forEach((property) => {
-						body[property.field] = property.value;
-					});
-
-					const docType = this.getNodeParameter('docType', i) as string;
-					const documentName = this.getNodeParameter('documentName', i) as string;
-
-					responseData = await erpNextApiRequest.call(
-						this,
-						'PUT',
-						`/api/resource/${docType}/${documentName}`,
-						body,
-					);
-					responseData = responseData.data;
-				}
-			}
-
-			const executionData = this.helpers.constructExecutionMetaData(
-				this.helpers.returnJsonArray(responseData as IDataObject[]),
-				{ itemData: { item: i } },
-			);
-			returnData.push(...executionData);
+		// 获取对应资源的执行函数
+		const resourceExecute = getResourceExecute(resource);
+		
+		if (!resourceExecute) {
+			throw new Error(`Resource ${resource} not found or not implemented`);
 		}
-		return [returnData];
+
+		// 调用对应资源的执行逻辑
+		return await resourceExecute.call(this, operation);
 	}
 } 
