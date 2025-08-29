@@ -27,7 +27,7 @@ npm install n8n-nodes-dty-erpnext-cn
 
 ## 节点列表
 
-- **ERPNext CN**: ERPNext中国版本集成节点
+- **ERPNextcn**: ERPNext中国版本集成节点
 
 ## 开发
 
