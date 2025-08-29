@@ -68,6 +68,7 @@ pnpm run lintfix
    ```bash
    npm login
    ```
+   $ npm version patch
 
 2. 构建项目：
    ```bash
