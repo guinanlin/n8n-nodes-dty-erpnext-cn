@@ -1,6 +1,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 
-export const documentOperations: INodeProperties[] = [
+// 文档查询操作
+export const documentQueryOperations: INodeProperties[] = [
 	{
 		displayName: '操作',
 		name: 'operation',
@@ -8,7 +9,37 @@ export const documentOperations: INodeProperties[] = [
 		noDataExpression: true,
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentQuery'],
+			},
+		},
+		options: [
+			{
+				name: '获取',
+				value: 'get',
+				description: '获取单个文档',
+				action: '获取文档',
+			},
+			{
+				name: 'Get Many',
+				value: 'getAll',
+				description: '获取多个文档',
+				action: '获取多个文档',
+			},
+		],
+		default: 'get',
+	},
+];
+
+// 文档管理操作
+export const documentManageOperations: INodeProperties[] = [
+	{
+		displayName: '操作',
+		name: 'operation',
+		type: 'options',
+		noDataExpression: true,
+		displayOptions: {
+			show: {
+				resource: ['documentManage'],
 			},
 		},
 		options: [
@@ -25,31 +56,20 @@ export const documentOperations: INodeProperties[] = [
 				action: '更新文档',
 			},
 			{
-				name: '获取',
-				value: 'get',
-				description: '获取单个文档',
-				action: '获取文档',
-			},
-			{
 				name: '删除',
 				value: 'delete',
 				description: '删除文档',
 				action: '删除文档',
-			},
-			{
-				name: 'Get Many',
-				value: 'getAll',
-				description: '获取多个文档',
-				action: '获取多个文档',
 			},
 		],
 		default: 'create',
 	},
 ];
 
-export const documentFields: INodeProperties[] = [
+// 文档查询字段
+export const documentQueryFields: INodeProperties[] = [
 	// ----------------------------------
-	//       document: getAll
+	//       documentQuery: getAll
 	// ----------------------------------
 	{
 		displayName: '文档类型 Name or ID',
@@ -63,7 +83,7 @@ export const documentFields: INodeProperties[] = [
 		placeholder: '客户',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentQuery'],
 				operation: ['getAll'],
 			},
 		},
@@ -76,7 +96,7 @@ export const documentFields: INodeProperties[] = [
 		description: 'Whether to return all results or only up to a given limit',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentQuery'],
 				operation: ['getAll'],
 			},
 		},
@@ -92,7 +112,7 @@ export const documentFields: INodeProperties[] = [
 		description: 'Max number of results to return',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentQuery'],
 				operation: ['getAll'],
 				returnAll: [false],
 			},
@@ -106,7 +126,7 @@ export const documentFields: INodeProperties[] = [
 		default: {},
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentQuery'],
 				operation: ['getAll'],
 			},
 		},
@@ -196,7 +216,45 @@ export const documentFields: INodeProperties[] = [
 	},
 
 	// ----------------------------------
-	//       document: create
+	//          documentQuery: get
+	// ----------------------------------
+	{
+		displayName: '文档类型 Name or ID',
+		name: 'docType',
+		type: 'options',
+		typeOptions: {
+			loadOptionsMethod: 'getDocTypes',
+		},
+		default: '',
+		description: '要获取的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		displayOptions: {
+			show: {
+				resource: ['documentQuery'],
+				operation: ['get'],
+			},
+		},
+		required: true,
+	},
+	{
+		displayName: '文档名称',
+		name: 'documentName',
+		type: 'string',
+		default: '',
+		description: '要获取的文档名称（ID）',
+		displayOptions: {
+			show: {
+				resource: ['documentQuery'],
+				operation: ['get'],
+			},
+		},
+		required: true,
+	},
+];
+
+// 文档管理字段
+export const documentManageFields: INodeProperties[] = [
+	// ----------------------------------
+	//       documentManage: create
 	// ----------------------------------
 	{
 		displayName: '文档类型 Name or ID',
@@ -211,7 +269,7 @@ export const documentFields: INodeProperties[] = [
 		placeholder: '客户',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['create'],
 			},
 		},
@@ -228,7 +286,7 @@ export const documentFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['create'],
 			},
 		},
@@ -261,42 +319,7 @@ export const documentFields: INodeProperties[] = [
 	},
 
 	// ----------------------------------
-	//          document: get
-	// ----------------------------------
-	{
-		displayName: '文档类型 Name or ID',
-		name: 'docType',
-		type: 'options',
-		typeOptions: {
-			loadOptionsMethod: 'getDocTypes',
-		},
-		default: '',
-		description: '要获取的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-		displayOptions: {
-			show: {
-				resource: ['document'],
-				operation: ['get'],
-			},
-		},
-		required: true,
-	},
-	{
-		displayName: '文档名称',
-		name: 'documentName',
-		type: 'string',
-		default: '',
-		description: '要获取的文档名称（ID）',
-		displayOptions: {
-			show: {
-				resource: ['document'],
-				operation: ['get'],
-			},
-		},
-		required: true,
-	},
-
-	// ----------------------------------
-	//       document: delete
+	//       documentManage: delete
 	// ----------------------------------
 	{
 		displayName: '文档类型 Name or ID',
@@ -309,7 +332,7 @@ export const documentFields: INodeProperties[] = [
 		description: '要删除的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['delete'],
 			},
 		},
@@ -323,7 +346,7 @@ export const documentFields: INodeProperties[] = [
 		description: '要删除的文档名称（ID）',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['delete'],
 			},
 		},
@@ -331,7 +354,7 @@ export const documentFields: INodeProperties[] = [
 	},
 
 	// ----------------------------------
-	//       document: update
+	//       documentManage: update
 	// ----------------------------------
 	{
 		displayName: '文档类型 Name or ID',
@@ -344,7 +367,7 @@ export const documentFields: INodeProperties[] = [
 		description: '要更新的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['update'],
 			},
 		},
@@ -358,7 +381,7 @@ export const documentFields: INodeProperties[] = [
 		description: '要更新的文档名称（ID）',
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['update'],
 			},
 		},
@@ -376,7 +399,7 @@ export const documentFields: INodeProperties[] = [
 		},
 		displayOptions: {
 			show: {
-				resource: ['document'],
+				resource: ['documentManage'],
 				operation: ['update'],
 			},
 		},
@@ -406,4 +429,8 @@ export const documentFields: INodeProperties[] = [
 			},
 		],
 	},
-]; 
+];
+
+// 保持向后兼容性
+export const documentOperations = documentQueryOperations;
+export const documentFields = documentQueryFields; 

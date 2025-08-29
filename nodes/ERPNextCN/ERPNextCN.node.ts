@@ -10,7 +10,12 @@ import type {
 } from 'n8n-workflow';
 import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
 
-import { documentFields, documentOperations } from './DocumentDescription';
+import { 
+	documentQueryOperations, 
+	documentQueryFields,
+	documentManageOperations,
+	documentManageFields 
+} from './DocumentDescription';
 import { erpNextApiRequest, erpNextApiRequestAllItems } from './GenericFunctions';
 import type { DocumentProperties } from './utils';
 import { processNames, toSQL } from './utils';
@@ -44,14 +49,20 @@ export class ERPNextCN implements INodeType {
 				noDataExpression: true,
 				options: [
 					{
-						name: '文档',
-						value: 'document',
+						name: '文档查询',
+						value: 'documentQuery',
+					},
+					{
+						name: '文档管理',
+						value: 'documentManage',
 					},
 				],
-				default: 'document',
+				default: 'documentQuery',
 			},
-			...documentOperations,
-			...documentFields,
+			...documentQueryOperations,
+			...documentQueryFields,
+			...documentManageOperations,
+			...documentManageFields,
 		],
 	};
 
@@ -126,14 +137,14 @@ export class ERPNextCN implements INodeType {
 			// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/Resources/post_api_resource_Webhook
 			// https://frappeframework.com/docs/user/en/guides/integration/rest_api/manipulating_documents
 
-			if (resource === 'document') {
+			if (resource === 'documentQuery') {
 				// *********************************************************************
-				//                             document
+				//                             documentQuery
 				// *********************************************************************
 
 				if (operation === 'get') {
 					// ----------------------------------
-					//          document: get
+					//          documentQuery: get
 					// ----------------------------------
 
 					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/get_api_resource__DocType___DocumentName_
@@ -151,7 +162,7 @@ export class ERPNextCN implements INodeType {
 
 				if (operation === 'getAll') {
 					// ----------------------------------
-					//         document: getAll
+					//         documentQuery: getAll
 					// ----------------------------------
 
 					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/get_api_resource__DocType_
@@ -202,9 +213,15 @@ export class ERPNextCN implements INodeType {
 							qs,
 						);
 					}
-				} else if (operation === 'create') {
+				}
+			} else if (resource === 'documentManage') {
+				// *********************************************************************
+				//                             documentManage
+				// *********************************************************************
+
+				if (operation === 'create') {
 					// ----------------------------------
-					//         document: create
+					//         documentManage: create
 					// ----------------------------------
 
 					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/post_api_resource__DocType_
@@ -234,7 +251,7 @@ export class ERPNextCN implements INodeType {
 					responseData = responseData.data;
 				} else if (operation === 'delete') {
 					// ----------------------------------
-					//         document: delete
+					//         documentManage: delete
 					// ----------------------------------
 
 					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/delete_api_resource__DocType___DocumentName_
@@ -249,7 +266,7 @@ export class ERPNextCN implements INodeType {
 					);
 				} else if (operation === 'update') {
 					// ----------------------------------
-					//         document: update
+					//         documentManage: update
 					// ----------------------------------
 
 					// https://app.swaggerhub.com/apis-docs/alyf.de/ERPNext/11#/General/put_api_resource__DocType___DocumentName_
