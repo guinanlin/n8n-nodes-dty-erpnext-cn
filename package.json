@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-dty-erpnext-cn",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "n8n nodes for DTY ERPNext China integration",
   "keywords": [
     "n8n-community-node-package",
