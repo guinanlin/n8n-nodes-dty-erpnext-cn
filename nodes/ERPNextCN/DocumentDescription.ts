@@ -2,7 +2,7 @@ import type { INodeProperties } from 'n8n-workflow';
 
 export const documentOperations: INodeProperties[] = [
 	{
-		displayName: 'Operation',
+		displayName: '操作',
 		name: 'operation',
 		type: 'options',
 		noDataExpression: true,
@@ -13,34 +13,34 @@ export const documentOperations: INodeProperties[] = [
 		},
 		options: [
 			{
-				name: 'Create',
+				name: '创建',
 				value: 'create',
-				description: 'Create a document',
-				action: 'Create a document',
+				description: '创建文档',
+				action: '创建文档',
 			},
 			{
-				name: 'Delete',
-				value: 'delete',
-				description: 'Delete a document',
-				action: 'Delete a document',
+				name: '更新',
+				value: 'update',
+				description: '更新文档',
+				action: '更新文档',
 			},
 			{
-				name: 'Get',
+				name: '获取',
 				value: 'get',
-				description: 'Retrieve a document',
-				action: 'Get a document',
+				description: '获取单个文档',
+				action: '获取文档',
+			},
+			{
+				name: '删除',
+				value: 'delete',
+				description: '删除文档',
+				action: '删除文档',
 			},
 			{
 				name: 'Get Many',
 				value: 'getAll',
-				description: 'Retrieve many documents',
-				action: 'Get many documents',
-			},
-			{
-				name: 'Update',
-				value: 'update',
-				description: 'Update a document',
-				action: 'Update a document',
+				description: '获取多个文档',
+				action: '获取多个文档',
 			},
 		],
 		default: 'create',
@@ -52,16 +52,15 @@ export const documentFields: INodeProperties[] = [
 	//       document: getAll
 	// ----------------------------------
 	{
-		displayName: 'DocType Name or ID',
+		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
 		},
 		default: '',
-		description:
-			'DocType whose documents to retrieve. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-		placeholder: 'Customer',
+		description: '要检索的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		placeholder: '客户',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -70,7 +69,7 @@ export const documentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Return All',
+		displayName: '返回全部',
 		name: 'returnAll',
 		type: 'boolean',
 		default: false,
@@ -83,7 +82,7 @@ export const documentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Limit',
+		displayName: '限制数量',
 		name: 'limit',
 		type: 'number',
 		typeOptions: {
@@ -100,10 +99,10 @@ export const documentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Options',
+		displayName: '选项',
 		name: 'options',
 		type: 'collection',
-		placeholder: 'Add Field',
+		placeholder: '添加字段',
 		default: {},
 		displayOptions: {
 			show: {
@@ -113,7 +112,7 @@ export const documentFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Field Names or IDs',
+				displayName: '字段名称或ID Names or IDs',
 				name: 'fields',
 				type: 'multiOptions',
 				typeOptions: {
@@ -121,31 +120,29 @@ export const documentFields: INodeProperties[] = [
 					loadOptionsDependsOn: ['docType'],
 				},
 				default: [],
-				description:
-					'Comma-separated list of fields to return. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+				description: '要返回的字段的逗号分隔列表。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify IDs using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				placeholder: 'name,country',
 			},
 			{
-				displayName: 'Filters',
+				displayName: '筛选条件',
 				name: 'filters',
 				type: 'fixedCollection',
 				default: {},
-				placeholder: 'Add Filter',
-				description: 'Custom Properties',
+				placeholder: '添加筛选条件',
+				description: '自定义属性',
 				typeOptions: {
 					multipleValues: true,
 				},
 				options: [
 					{
-						displayName: 'Property',
+						displayName: '属性',
 						name: 'customProperty',
 						values: [
 							{
-								displayName: 'Field Name or ID',
+								displayName: '字段名称或ID Name or ID',
 								name: 'field',
 								type: 'options',
-								description:
-									'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+								description: '从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 								typeOptions: {
 									loadOptionsMethod: 'getDocFields',
 									loadOptionsDependsOn: ['docType'],
@@ -153,43 +150,43 @@ export const documentFields: INodeProperties[] = [
 								default: '',
 							},
 							{
-								displayName: 'Operator',
+								displayName: '操作符',
 								name: 'operator',
 								type: 'options',
 								default: 'is',
 								options: [
 									{
-										name: 'EQUALS, or GREATER',
-										value: 'equalsGreater',
+										name: '不等于',
+										value: 'isNot',
 									},
 									{
-										name: 'EQUALS, or LESS',
-										value: 'equalsLess',
-									},
-									{
-										name: 'IS',
-										value: 'is',
-									},
-									{
-										name: 'IS GREATER',
+										name: '大于',
 										value: 'greater',
 									},
 									{
-										name: 'IS LESS',
-										value: 'less',
+										name: '等于',
+										value: 'is',
 									},
 									{
-										name: 'IS NOT',
-										value: 'isNot',
+										name: '等于或大于',
+										value: 'equalsGreater',
+									},
+									{
+										name: '等于或小于',
+										value: 'equalsLess',
+									},
+									{
+										name: '小于',
+										value: 'less',
 									},
 								],
 							},
 							{
-								displayName: 'Value',
+								displayName: '值',
 								name: 'value',
 								type: 'string',
 								default: '',
-								description: 'Value of the operator condition',
+								description: '操作符条件的值',
 							},
 						],
 					},
@@ -202,7 +199,7 @@ export const documentFields: INodeProperties[] = [
 	//       document: create
 	// ----------------------------------
 	{
-		displayName: 'DocType Name or ID',
+		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		default: '',
@@ -210,9 +207,8 @@ export const documentFields: INodeProperties[] = [
 			loadOptionsMethod: 'getDocTypes',
 		},
 		required: true,
-		description:
-			'DocType you would like to create. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-		placeholder: 'Customer',
+		description: '要创建的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		placeholder: '客户',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -221,10 +217,10 @@ export const documentFields: INodeProperties[] = [
 		},
 	},
 	{
-		displayName: 'Properties',
+		displayName: '属性',
 		name: 'properties',
 		type: 'fixedCollection',
-		placeholder: 'Add Property',
+		placeholder: '添加属性',
 		required: true,
 		default: {},
 		typeOptions: {
@@ -238,16 +234,15 @@ export const documentFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Property',
+				displayName: '属性',
 				name: 'customProperty',
-				placeholder: 'Add Property',
+				placeholder: '添加属性',
 				values: [
 					{
-						displayName: 'Field Name or ID',
+						displayName: '字段名称或ID Name or ID',
 						name: 'field',
 						type: 'options',
-						description:
-							'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: '从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: {
 							loadOptionsMethod: 'getDocFields',
 							loadOptionsDependsOn: ['docType'],
@@ -255,7 +250,7 @@ export const documentFields: INodeProperties[] = [
 						default: '',
 					},
 					{
-						displayName: 'Value',
+						displayName: '值',
 						name: 'value',
 						type: 'string',
 						default: '',
@@ -269,15 +264,14 @@ export const documentFields: INodeProperties[] = [
 	//          document: get
 	// ----------------------------------
 	{
-		displayName: 'DocType Name or ID',
+		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
 		},
 		default: '',
-		description:
-			'The type of document you would like to get. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		description: '要获取的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -287,11 +281,11 @@ export const documentFields: INodeProperties[] = [
 		required: true,
 	},
 	{
-		displayName: 'Document Name',
+		displayName: '文档名称',
 		name: 'documentName',
 		type: 'string',
 		default: '',
-		description: 'The name (ID) of document you would like to get',
+		description: '要获取的文档名称（ID）',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -305,15 +299,14 @@ export const documentFields: INodeProperties[] = [
 	//       document: delete
 	// ----------------------------------
 	{
-		displayName: 'DocType Name or ID',
+		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
 		},
 		default: '',
-		description:
-			'The type of document you would like to delete. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		description: '要删除的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -323,11 +316,11 @@ export const documentFields: INodeProperties[] = [
 		required: true,
 	},
 	{
-		displayName: 'Document Name',
+		displayName: '文档名称',
 		name: 'documentName',
 		type: 'string',
 		default: '',
-		description: 'The name (ID) of document you would like to get',
+		description: '要删除的文档名称（ID）',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -341,15 +334,14 @@ export const documentFields: INodeProperties[] = [
 	//       document: update
 	// ----------------------------------
 	{
-		displayName: 'DocType Name or ID',
+		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
 		},
 		default: '',
-		description:
-			'The type of document you would like to update. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		description: '要更新的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -359,11 +351,11 @@ export const documentFields: INodeProperties[] = [
 		required: true,
 	},
 	{
-		displayName: 'Document Name',
+		displayName: '文档名称',
 		name: 'documentName',
 		type: 'string',
 		default: '',
-		description: 'The name (ID) of document you would like to get',
+		description: '要更新的文档名称（ID）',
 		displayOptions: {
 			show: {
 				resource: ['document'],
@@ -373,11 +365,11 @@ export const documentFields: INodeProperties[] = [
 		required: true,
 	},
 	{
-		displayName: 'Properties',
+		displayName: '属性',
 		name: 'properties',
 		type: 'fixedCollection',
-		placeholder: 'Add Property',
-		description: 'Properties of request body',
+		placeholder: '添加属性',
+		description: '请求体的属性',
 		default: {},
 		typeOptions: {
 			multipleValues: true,
@@ -390,15 +382,14 @@ export const documentFields: INodeProperties[] = [
 		},
 		options: [
 			{
-				displayName: 'Property',
+				displayName: '属性',
 				name: 'customProperty',
 				values: [
 					{
-						displayName: 'Field Name or ID',
+						displayName: '字段名称或ID Name or ID',
 						name: 'field',
 						type: 'options',
-						description:
-							'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+						description: '从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 						typeOptions: {
 							loadOptionsMethod: 'getDocFields',
 							loadOptionsDependsOn: ['docType'],
@@ -406,7 +397,7 @@ export const documentFields: INodeProperties[] = [
 						default: '',
 					},
 					{
-						displayName: 'Value',
+						displayName: '值',
 						name: 'value',
 						type: 'string',
 						default: '',

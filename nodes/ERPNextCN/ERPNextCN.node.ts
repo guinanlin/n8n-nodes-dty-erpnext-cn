@@ -23,7 +23,7 @@ export class ERPNextCN implements INodeType {
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
-		description: 'Consume ERPNext API (China Version)',
+		description: 'ERPNext中国版本API集成',
 		defaults: {
 			name: 'erpNextcn',
 		},
@@ -38,13 +38,13 @@ export class ERPNextCN implements INodeType {
 		],
 		properties: [
 			{
-				displayName: 'Resource',
+				displayName: '资源',
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
 				options: [
 					{
-						name: 'Document',
+						name: '文档',
 						value: 'document',
 					},
 				],
