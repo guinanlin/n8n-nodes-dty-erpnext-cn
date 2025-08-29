@@ -27,8 +27,7 @@ npm install n8n-nodes-dty-erpnext-cn
 
 ## 节点列表
 
-- **ExampleNode**: 示例节点
-- **HttpBin**: HTTP测试节点
+- **ERPNext CN**: ERPNext中国版本集成节点
 
 ## 开发
 

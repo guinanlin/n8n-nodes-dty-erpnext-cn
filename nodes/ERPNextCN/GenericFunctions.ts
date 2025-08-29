@@ -95,4 +95,4 @@ type ERPNextApiCredentials = {
 	subdomain?: string;
 	domain?: string;
 	allowUnauthorizedCerts?: boolean;
-};
+}; 

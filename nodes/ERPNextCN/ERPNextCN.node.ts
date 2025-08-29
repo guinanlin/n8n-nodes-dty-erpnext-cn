@@ -15,17 +15,17 @@ import { erpNextApiRequest, erpNextApiRequestAllItems } from './GenericFunctions
 import type { DocumentProperties } from './utils';
 import { processNames, toSQL } from './utils';
 
-export class ERPNext implements INodeType {
+export class ERPNextCN implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'ERPNext',
-		name: 'erpNext',
+		displayName: 'ERPNext CN',
+		name: 'erpNextCN',
 		icon: 'file:erpnext.svg',
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["resource"] + ": " + $parameter["operation"]}}',
-		description: 'Consume ERPNext API',
+		description: 'Consume ERPNext API (China Version)',
 		defaults: {
-			name: 'ERPNext',
+			name: 'ERPNext CN',
 		},
 		usableAsTool: true,
 		inputs: [NodeConnectionType.Main],
@@ -289,4 +289,4 @@ export class ERPNext implements INodeType {
 		}
 		return [returnData];
 	}
-}
+} 

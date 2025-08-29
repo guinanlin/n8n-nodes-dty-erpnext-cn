@@ -25,4 +25,4 @@ export const toSQL = (operator: string) => {
 	};
 
 	return operators[operator];
-};
+}; 

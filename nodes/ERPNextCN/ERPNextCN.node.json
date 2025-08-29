@@ -1,5 +1,5 @@
 {
-	"node": "n8n-nodes-base.erpNext",
+	"node": "n8n-nodes-base.erpNextCN",
 	"nodeVersion": "1.0",
 	"codexVersion": "1.0",
 	"categories": ["Finance & Accounting", "Data & Storage"],
@@ -15,4 +15,4 @@
 			}
 		]
 	}
-}
+} 
