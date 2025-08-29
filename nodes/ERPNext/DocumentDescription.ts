@@ -89,7 +89,7 @@ export const documentFields: INodeProperties[] = [
 		typeOptions: {
 			minValue: 1,
 		},
-		default: 10,
+		default: 50,
 		description: 'Max number of results to return',
 		displayOptions: {
 			show: {
@@ -252,7 +252,7 @@ export const documentFields: INodeProperties[] = [
 							loadOptionsMethod: 'getDocFields',
 							loadOptionsDependsOn: ['docType'],
 						},
-						default: [],
+						default: '',
 					},
 					{
 						displayName: 'Value',
