@@ -6,8 +6,9 @@ import type {
 	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
+	IDataObject,
 } from 'n8n-workflow';
-import { NodeConnectionType } from 'n8n-workflow';
+import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
 
 import { 
 	getResourceOptions, 
@@ -46,7 +47,7 @@ export class ERPNextCN implements INodeType {
 				type: 'options',
 				noDataExpression: true,
 				options: getResourceOptions(),
-				default: 'documentQuery',
+				default: '',
 			},
 			...getAllOperations(),
 			...getAllFields(),
@@ -55,13 +56,24 @@ export class ERPNextCN implements INodeType {
 
 	methods = {
 		loadOptions: {
-			async getDocTypes(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+			async getDocTypes(this: ILoadOptionsFunctions, searchTerm?: string): Promise<INodePropertyOptions[]> {
+				const query: IDataObject = {};
+				
+				// 如果有搜索词，添加搜索条件
+				if (searchTerm) {
+					query.filters = JSON.stringify([['name', 'like', `%${searchTerm}%`]]);
+				}
+				
+				// 限制返回数量为20条
+				query.limit_page_length = 20;
+				
 				const data = await erpNextApiRequestAllItems.call(
 					this,
 					'data',
 					'GET',
 					'/api/resource/DocType',
 					{},
+					query,  // 传入查询参数
 				);
 				const docTypes = data.map(({ name }: { name: string }) => {
 					return { name, value: encodeURI(name) };
@@ -116,7 +128,7 @@ export class ERPNextCN implements INodeType {
 		const resourceExecute = getResourceExecute(resource);
 		
 		if (!resourceExecute) {
-			throw new Error(`Resource ${resource} not found or not implemented`);
+			throw new NodeOperationError(this.getNode(), `Resource ${resource} not found or not implemented`);
 		}
 
 		// 调用对应资源的执行逻辑

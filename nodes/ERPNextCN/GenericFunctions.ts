@@ -76,14 +76,24 @@ export async function erpNextApiRequestAllItems(
 	const returnData: any[] = [];
 
 	let responseData;
-	query.limit_start = 0;
-	query.limit_page_length = 1000;
-
-	do {
+	
+	// 如果没有设置limit_page_length，则使用默认值
+	if (!query.limit_page_length) {
+		query.limit_start = 0;
+		query.limit_page_length = 1000;
+		
+		// 分页获取所有数据
+		do {
+			responseData = await erpNextApiRequest.call(this, method, resource, body, query);
+			returnData.push.apply(returnData, responseData[propertyName] as IDataObject[]);
+			query.limit_start += query.limit_page_length - 1;
+		} while (responseData.data && responseData.data.length > 0);
+	} else {
+		// 如果设置了limit_page_length，只获取一次
+		query.limit_start = 0;
 		responseData = await erpNextApiRequest.call(this, method, resource, body, query);
 		returnData.push.apply(returnData, responseData[propertyName] as IDataObject[]);
-		query.limit_start += query.limit_page_length - 1;
-	} while (responseData.data && responseData.data.length > 0);
+	}
 
 	return returnData;
 }
