@@ -6,7 +6,6 @@ import type {
 	INodePropertyOptions,
 	INodeType,
 	INodeTypeDescription,
-	IDataObject,
 } from 'n8n-workflow';
 import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
 
@@ -16,8 +15,7 @@ import {
 	getAllFields, 
 	getResourceExecute 
 } from './resources';
-import { erpNextApiRequest, erpNextApiRequestAllItems } from './GenericFunctions';
-import { processNames } from './shared/helpers';
+import { DocTypeService, FileService } from './services';
 
 export class ERPNextCN implements INodeType {
 	description: INodeTypeDescription = {
@@ -56,67 +54,35 @@ export class ERPNextCN implements INodeType {
 
 	methods = {
 		loadOptions: {
-			async getDocTypes(this: ILoadOptionsFunctions, searchTerm?: string): Promise<INodePropertyOptions[]> {
-				const query: IDataObject = {};
-				
-				// 如果有搜索词，添加搜索条件
-				if (searchTerm) {
-					query.filters = JSON.stringify([['name', 'like', `%${searchTerm}%`]]);
-				}
-				
-				// 限制返回数量为20条
-				query.limit_page_length = 20;
-				
-				const data = await erpNextApiRequestAllItems.call(
-					this,
-					'data',
-					'GET',
-					'/api/resource/DocType',
-					{},
-					query,  // 传入查询参数
-				);
-				const docTypes = data.map(({ name }: { name: string }) => {
-					return { name, value: encodeURI(name) };
-				});
-
-				return processNames(docTypes);
+			// DocType相关方法委托给DocTypeService处理
+			async getDocTypes(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				return DocTypeService.getDocTypes(this);
 			},
 			async getDocFilters(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-				const docType = this.getCurrentNodeParameter('docType') as string;
-				const { data } = await erpNextApiRequest.call(
-					this,
-					'GET',
-					`/api/resource/DocType/${docType}`,
-					{},
-				);
-
-				const docFields = data.fields.map(
-					({ label, fieldname }: { label: string; fieldname: string }) => {
-						return { name: label, value: fieldname };
-					},
-				);
-
-				docFields.unshift({ name: '*', value: '*' });
-
-				return processNames(docFields);
+				return DocTypeService.getDocFilters(this);
 			},
 			async getDocFields(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
-				const docType = this.getCurrentNodeParameter('docType') as string;
-				const { data } = await erpNextApiRequest.call(
-					this,
-					'GET',
-					`/api/resource/DocType/${docType}`,
-					{},
-				);
-
-				const docFields = data.fields.map(
-					({ label, fieldname }: { label: string; fieldname: string }) => {
-						return { name: label, value: fieldname };
-					},
-				);
-
-				return processNames(docFields);
+				return DocTypeService.getDocFields(this);
 			},
+			// File相关方法委托给FileService处理
+			async getFiles(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const files = await FileService.getFiles(this);
+				return files.map((file: any) => ({
+					name: file.file_name,
+					value: file.name,
+				}));
+			},
+			async getFileNames(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+				const files = await FileService.getFiles(this);
+				return files.map((file: any) => ({
+					name: file.file_name,
+					value: file.file_name, // 使用file_name作为value，便于在其他操作中使用
+				}));
+			},
+			// 未来可以添加更多服务的loadOptions方法
+			// async getUsers(this: ILoadOptionsFunctions): Promise<INodePropertyOptions[]> {
+			//     return UserService.getUsers(this);
+			// },
 		},
 	};
 

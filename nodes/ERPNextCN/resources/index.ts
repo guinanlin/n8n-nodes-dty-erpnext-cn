@@ -1,4 +1,4 @@
-import type { INodeProperties, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow';
+import type { INodeProperties } from 'n8n-workflow';
 import { 
 	DocumentQueryOperations, 
 	DocumentQueryFields, 
@@ -9,23 +9,35 @@ import {
 	DocumentManageFields, 
 	DocumentManageExecute 
 } from './DocumentManage';
+import { 
+	FileUploadOperations, 
+	FileUploadFields, 
+	FileUploadExecute 
+} from './FileUpload';
 import type { IResource } from '../shared/types';
 
 // 资源注册表
 export const resources: Record<string, IResource> = {
 	documentQuery: {
-		name: '文档查询',
+		name: 'Doctype查询',
 		value: 'documentQuery',
 		operations: DocumentQueryOperations,
 		fields: DocumentQueryFields,
 		execute: DocumentQueryExecute,
 	},
 	documentManage: {
-		name: '文档管理',
+		name: 'Doctype创建、更新、删除',
 		value: 'documentManage',
 		operations: DocumentManageOperations,
 		fields: DocumentManageFields,
 		execute: DocumentManageExecute,
+	},
+	fileUpload: {
+		name: '文件处理',
+		value: 'fileUpload',
+		operations: FileUploadOperations,
+		fields: FileUploadFields,
+		execute: FileUploadExecute,
 	},
 };
 
@@ -54,4 +66,5 @@ export const getResourceExecute = (resourceValue: string) => {
 
 // 导出所有资源
 export * from './DocumentQuery';
-export * from './DocumentManage'; 
+export * from './DocumentManage';
+export * from './FileUpload'; 

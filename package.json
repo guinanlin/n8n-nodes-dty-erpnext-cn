@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-dty-erpnext-cn",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "n8n nodes for DTY ERPNext China integration",
   "keywords": [
     "n8n-community-node-package",
@@ -36,7 +36,9 @@
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
     "prepublishOnly": "npm run build && npm run lint -c .eslintrc.prepublish.js nodes credentials package.json",
-    "publish:check": "node publish.js"
+    "publish:check": "node publish.js",
+    "sync": "pnpm run build && cp -r dist/nodes/ERPNextCN ~/.n8n/custom/ && echo '✅ 节点已同步到n8n，正在启动n8n服务...' && n8n start",
+    "sync:win": "pnpm run build && xcopy /e /i /y \"dist\\nodes\\ERPNextCN\" \"%USERPROFILE%\\.n8n\\custom\\ERPNextCN\" && echo ✅ 节点已同步到n8n，正在启动n8n服务... && n8n start"
   },
   "files": [
     "dist"

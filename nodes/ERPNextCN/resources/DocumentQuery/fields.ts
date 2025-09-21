@@ -5,16 +5,29 @@ export const DocumentQueryFields: INodeProperties[] = [
 	//       documentQuery: getAll
 	// ----------------------------------
 	{
+		displayName: 'DocType 搜索关键字',
+		name: 'docTypeSearchKeyword',
+		type: 'string',
+		default: '',
+		description: '输入关键字搜索DocType，支持模糊匹配',
+		placeholder: '例如：Customer, Sales, Item',
+		displayOptions: {
+			show: {
+				resource: ['documentQuery'],
+				operation: ['getAll'],
+			},
+		},
+	},
+	{
 		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
-			searchable: true,
+			loadOptionsDependsOn: ['docTypeSearchKeyword'],
 		},
 		default: '',
-		description: '要检索的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。支持搜索功能，输入关键词可快速查找。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
-		placeholder: '客户',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		displayOptions: {
 			show: {
 				resource: ['documentQuery'],
@@ -153,15 +166,29 @@ export const DocumentQueryFields: INodeProperties[] = [
 	//          documentQuery: get
 	// ----------------------------------
 	{
+		displayName: 'DocType 搜索关键字',
+		name: 'docTypeSearchKeyword',
+		type: 'string',
+		default: '',
+		description: '输入关键字搜索DocType，支持模糊匹配',
+		placeholder: '例如：Customer, Sales, Item',
+		displayOptions: {
+			show: {
+				resource: ['documentQuery'],
+				operation: ['get'],
+			},
+		},
+	},
+	{
 		displayName: '文档类型 Name or ID',
 		name: 'docType',
 		type: 'options',
 		typeOptions: {
 			loadOptionsMethod: 'getDocTypes',
-			searchable: true,
+			loadOptionsDependsOn: ['docTypeSearchKeyword'],
 		},
 		default: '',
-		description: '要获取的文档类型。从列表中选择，或使用<a href="https://docs.n8n.io/code/expressions/">表达式</a>指定ID。支持搜索功能，输入关键词可快速查找。. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
+		description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 		displayOptions: {
 			show: {
 				resource: ['documentQuery'],
